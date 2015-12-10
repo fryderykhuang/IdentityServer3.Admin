@@ -15,14 +15,20 @@
  */
 
 using System;
+using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Dispatcher;
 using System.Web.Http.ExceptionHandling;
+using IdentityAdmin.Api.Controllers;
 using IdentityAdmin.Configuration.Hosting;
 
 namespace IdentityAdmin.Configuration
 {
     public class WebApiConfig
     {
+        private static Type[] controllerTypes = new[]
+        {typeof (AdminPageController), typeof (ClientController), typeof (MetaController), typeof (ScopeController)};
+
         public static HttpConfiguration Configure(IdentityAdminOptions options)
         {
             if (options == null) throw new ArgumentNullException("idAdminConfig");
@@ -30,16 +36,19 @@ namespace IdentityAdmin.Configuration
             var config = new HttpConfiguration();
             config.MessageHandlers.Insert(0, new KatanaDependencyResolver());
 
+            config.Services.Replace(typeof (IHttpControllerTypeResolver),
+                new DefaultHttpControllerTypeResolver(t => controllerTypes.Contains(t)));
+
             config.MapHttpAttributeRoutes();
-            if (!options.DisableUserInterface)
-            {
-                config.Routes.MapHttpRoute(Constants.RouteNames.Home,
-                    "",
-                    new { controller = "AdminPage", action = "Index" });
-                config.Routes.MapHttpRoute(Constants.RouteNames.Logout,
-                    "logout",
-                    new { controller = "AdminPage", action = "Logout" });
-            }
+            //if (!options.DisableUserInterface)
+            //{
+            //    config.Routes.MapHttpRoute(Constants.RouteNames.Home,
+            //        "",
+            //        new { controller = "AdminPage", action = "Index" });
+            //    config.Routes.MapHttpRoute(Constants.RouteNames.Logout,
+            //        "logout",
+            //        new { controller = "AdminPage", action = "Logout" });
+            //}
 
             config.SuppressDefaultHostAuthentication();
             if (!options.DisableSecurity)

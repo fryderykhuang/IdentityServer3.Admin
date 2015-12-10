@@ -35,6 +35,7 @@ namespace IdentityAdmin.Api.Controllers
             this._identityAdminOptions = identityAdminOptions;
         }
 
+        [Route("", Name = Constants.RouteNames.Home)]
         [HttpGet]
         [AllowAnonymous]
         public IHttpActionResult Index()
@@ -42,6 +43,7 @@ namespace IdentityAdmin.Api.Controllers
             return new EmbeddedHtmlResult(Request, "IdentityAdmin.Assets.Templates.index.html", _identityAdminOptions.AdminSecurityConfiguration);
         }
 
+        [Route("logout", Name = Constants.RouteNames.Logout)]
         [HttpGet]
         [AllowAnonymous]
         public IHttpActionResult Logout()

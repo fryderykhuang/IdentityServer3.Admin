@@ -29,7 +29,11 @@ namespace IdentityAdmin.Configuration.Hosting.LocalAuthenticationMiddleware
         {
             var ctx = this.Context;
             var localAddresses = new string[] { "127.0.0.1", "::1", ctx.Request.LocalIpAddress };
-            if (localAddresses.Contains(ctx.Request.RemoteIpAddress))
+            var remoteIP =
+                (ctx.Request.Headers.GetCommaSeparatedValues("X-Forwarded-For") ?? new string[0]).LastOrDefault(
+                    x => !localAddresses.Contains(x)) ?? ctx.Request.RemoteIpAddress;
+
+            if (localAddresses.Contains(remoteIP))
             {
                 var id = new ClaimsIdentity(this.Options.Configuration.HostAuthenticationType, this.Options.Configuration.NameClaimType, this.Options.Configuration.RoleClaimType);
                 id.AddClaim(new Claim(this.Options.Configuration.NameClaimType, Messages.LocalUsername));

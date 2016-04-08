@@ -79,7 +79,12 @@ namespace IdentityAdmin.Api.Models.Scope
                             {
                                 subject = scope.Subject,
                                 id = c.Id
-                            })
+                            }),
+                            update = url.Link(Constants.RouteNames.UpdateScopeClaim, new
+                            {
+                                subject = scope.Subject,
+                                id = c.Id
+                            }),
                         }
                     };
 
@@ -92,8 +97,39 @@ namespace IdentityAdmin.Api.Models.Scope
                     }
                 };
             }
-            #endregion    
-         
+            if (scope.ScopeSecretValues != null)
+            {
+                var scopeSecrets =
+                    from c in scope.ScopeSecretValues.ToArray()
+                    select new
+                    {
+                        Data = c,
+                        Links = new
+                        {
+                            delete = url.Link(Constants.RouteNames.RemoveScopeSecret, new
+                            {
+                                subject = scope.Subject,
+                                id = c.Id
+                            }),
+                            update = url.Link(Constants.RouteNames.UpdateScopeSecret, new
+                            {
+                                subject = scope.Subject,
+                                id = c.Id
+                            }),
+                        }
+                    };
+
+                this["Secrets"] = new
+                {
+                    Data = scopeSecrets.ToArray(),
+                    Links = new
+                    {
+                        create = url.Link(Constants.RouteNames.AddScopeSecret, new { subject = scope.Subject })
+                    }
+                };
+            }
+            #endregion
+
         }
     }
 }

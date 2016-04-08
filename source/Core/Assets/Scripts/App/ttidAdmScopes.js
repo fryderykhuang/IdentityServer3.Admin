@@ -3,7 +3,7 @@
 
 (function (angular) {
 
-    var app = angular.module("ttidAdmScopes", ['ngRoute', 'ttidAdm', 'ttidAdmUI']);
+    var app = angular.module("ttidAdmScopes", ['ngRoute', 'ttidAdm', 'ttidAdmUI', 'ui.bootstrap']);
     function config($routeProvider, PathBase) {
         $routeProvider
             .when("/scopes/list/:filter?/:page?", {
@@ -155,6 +155,87 @@
                     feedback.message = "Scope Claim Removed : " + scopeClaim.data.name + ", " + scopeClaim.data.description;
                     loadScope().then(function () {
                         $scope.claim = scopeClaim.data;
+                    });
+                }, feedback.errorHandler);
+        };
+
+        $scope.availableHashes = {
+            chosenHash: "SHA-512",
+            choices: [
+            {
+                id: "SHA-256",
+                text: "SHA-256",
+                isDefault: "false"
+            }, {
+                id: "SHA-512",
+                text: "SHA-512",
+                isDefault: "true"
+            }
+            ]
+        };
+        function calculateScopeScretHash(clientSecret) {
+            var hashObj = new jsSHA(
+				$scope.availableHashes.chosenHash,
+				"TEXT",
+				{ numRounds: parseInt(1, 10) }
+			);
+            hashObj.update(clientSecret.value);
+            clientSecret.value = hashObj.getHash("B64");
+        }
+
+        //Datepicker
+      
+        $scope.calendar = {
+            isopen: {},
+            dateFormat: "yyyy/MM/dd hh:MM",
+            dateOptions: {},
+            open: function ($event, index) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                $scope.calendar.isopen[index] = true;
+            }
+        };        
+        $scope.dateSelected = function (secret) {
+            var value = $("[data-dateid='" + secret.data.id + "']").val();
+            secret.data.expiration = value;
+
+        }
+        //Secrets
+        $scope.addScopeSecret = function (scopeSecrets, scopeSecret) {
+            calculateScopeScretHash(scopeSecret);
+            idAdmScopes.addScopeSecret(scopeSecrets, scopeSecret)
+                .then(function () {
+                    feedback.message = "Scope Secret Added : " + scopeSecret.type;
+                    loadScope().then(function () {
+                        $scope.secret = scopeSecret.data;
+                    });
+                    loadScope();
+                }, feedback.errorHandler);
+        };
+        $scope.updateScopeClaim = function (claim) {
+            idAdmScopes.updateScopeClaim(claim)
+                      .then(function () {
+                          feedback.message = "Scope claim updated : " + claim.data.name;
+                          loadScope().then(function () {
+                              $scope.claim = claim.data;
+                          });
+                      }, feedback.errorHandler);
+        }
+        $scope.updateScopeSecret = function (scopeSecret) {
+            idAdmScopes.updateScopeSecret(scopeSecret)
+                .then(function () {
+                    feedback.message = "Scope Secret updated : " + scopeSecret.data.type;
+                    loadScope().then(function () {
+                        $scope.secret = scopeSecret.data;
+                    });
+                }, feedback.errorHandler);
+        };
+        $scope.removeScopeSecret = function (scopeSecret) {
+            idAdmScopes.removeScopeSecret(scopeSecret)
+                .then(function () {
+                    feedback.message = "Scope Secret Removed : " + scopeSecret.data.type;
+                    loadScope().then(function () {
+                        $scope.secret = scopeSecret.data;
                     });
                 }, feedback.errorHandler);
         };

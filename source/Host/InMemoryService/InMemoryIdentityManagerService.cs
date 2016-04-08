@@ -32,31 +32,37 @@ namespace IdentityAdmin.Host.InMemoryService
     {
         private ICollection<InMemoryClient> _clients;
         private ICollection<InMemoryScope> _scopes;
-
+        public static MapperConfiguration Config;
+        public static IMapper Mapper;
         public InMemoryIdentityManagerService(ICollection<InMemoryScope> scopes, ICollection<InMemoryClient> clients)
         {
             this._clients = clients;
             this._scopes = scopes;
-            Mapper.CreateMap<InMemoryClientClaim, ClientClaimValue>();
-            Mapper.CreateMap<ClientClaimValue, InMemoryClientClaim>();
-            Mapper.CreateMap<InMemoryClientSecret, ClientSecretValue>();
-            Mapper.CreateMap<ClientSecretValue, InMemoryClientSecret>();
-            Mapper.CreateMap<InMemoryClientIdPRestriction, ClientIdPRestrictionValue>();
-            Mapper.CreateMap<ClientIdPRestrictionValue, InMemoryClientIdPRestriction>();
-            Mapper.CreateMap<InMemoryClientPostLogoutRedirectUri, ClientPostLogoutRedirectUriValue>();
-            Mapper.CreateMap<ClientPostLogoutRedirectUriValue, InMemoryClientPostLogoutRedirectUri>();
-            Mapper.CreateMap<InMemoryClientRedirectUri, ClientRedirectUriValue>();
-            Mapper.CreateMap<ClientRedirectUriValue, InMemoryClientRedirectUri>();
-            Mapper.CreateMap<InMemoryClientCorsOrigin, ClientCorsOriginValue>();
-            Mapper.CreateMap<ClientCorsOriginValue, InMemoryClientCorsOrigin>();
-            Mapper.CreateMap<InMemoryClientCustomGrantType, ClientCustomGrantTypeValue>();
-            Mapper.CreateMap<ClientCustomGrantTypeValue, InMemoryClientCustomGrantType>();
-            Mapper.CreateMap<InMemoryClientScope, ClientScopeValue>();
-            Mapper.CreateMap<ClientScopeValue, InMemoryClientScope>();
-            Mapper.CreateMap<InMemoryScopeClaim, ScopeClaimValue>();
-            Mapper.CreateMap<ScopeClaimValue, InMemoryScopeClaim>();
-            Mapper.CreateMap<InMemoryScope, Scope>();
-            Mapper.CreateMap<Scope, InMemoryScope>();
+            Config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<InMemoryClientClaim, ClientClaimValue>();
+                cfg.CreateMap<ClientClaimValue, InMemoryClientClaim>();
+                cfg.CreateMap<InMemoryClientSecret, ClientSecretValue>();
+                cfg.CreateMap<ClientSecretValue, InMemoryClientSecret>();
+                cfg.CreateMap<InMemoryClientIdPRestriction, ClientIdPRestrictionValue>();
+                cfg.CreateMap<ClientIdPRestrictionValue, InMemoryClientIdPRestriction>();
+                cfg.CreateMap<InMemoryClientPostLogoutRedirectUri, ClientPostLogoutRedirectUriValue>();
+                cfg.CreateMap<ClientPostLogoutRedirectUriValue, InMemoryClientPostLogoutRedirectUri>();
+                cfg.CreateMap<InMemoryClientRedirectUri, ClientRedirectUriValue>();
+                cfg.CreateMap<ClientRedirectUriValue, InMemoryClientRedirectUri>();
+                cfg.CreateMap<InMemoryClientCorsOrigin, ClientCorsOriginValue>();
+                cfg.CreateMap<ClientCorsOriginValue, InMemoryClientCorsOrigin>();
+                cfg.CreateMap<InMemoryClientCustomGrantType, ClientCustomGrantTypeValue>();
+                cfg.CreateMap<ClientCustomGrantTypeValue, InMemoryClientCustomGrantType>();
+                cfg.CreateMap<InMemoryClientScope, ClientScopeValue>();
+                cfg.CreateMap<ClientScopeValue, InMemoryClientScope>();
+                cfg.CreateMap<InMemoryScopeClaim, ScopeClaimValue>();
+                cfg.CreateMap<ScopeClaimValue, InMemoryScopeClaim>();
+                cfg.CreateMap<InMemoryScopeSecret, ScopeSecretValue>();
+                cfg.CreateMap<ScopeSecretValue, InMemoryScopeSecret>();
+                cfg.CreateMap<InMemoryScope, Scope>();
+                cfg.CreateMap<Scope, InMemoryScope>();
+            });
+            Mapper = Config.CreateMapper();
         }
 
 
@@ -141,6 +147,8 @@ namespace IdentityAdmin.Host.InMemoryService
                 result.Properties = props.ToArray();
                 result.ScopeClaimValues = new List<ScopeClaimValue>();
                 Mapper.Map(inMemoryScope.ScopeClaims.ToList(), result.ScopeClaimValues);
+                result.ScopeSecretValues = new List<ScopeSecretValue>();
+                Mapper.Map(inMemoryScope.ScopeSecrets.ToList(), result.ScopeSecretValues);
                 return Task.FromResult(new IdentityAdminResult<ScopeDetail>(result));
             }
             return Task.FromResult(new IdentityAdminResult<ScopeDetail>((ScopeDetail) null));
@@ -251,8 +259,7 @@ namespace IdentityAdmin.Host.InMemoryService
             return Task.FromResult(new IdentityAdminResult("Invalid subject"));
         }
 
-        public Task<IdentityAdminResult> AddScopeClaimAsync(string subject, string name, string description,
-            bool alwaysIncludeInIdToken)
+        public Task<IdentityAdminResult> AddScopeClaimAsync(string subject, string name, string description,bool alwaysIncludeInIdToken)
         {
             int parsedSubject;
             if (int.TryParse(subject, out parsedSubject))
@@ -279,6 +286,28 @@ namespace IdentityAdmin.Host.InMemoryService
             return Task.FromResult(new IdentityAdminResult("Invalid subject"));
         }
 
+        public Task<IdentityAdminResult> UpdateScopeClaim(string subject, string scopeClaimSubject, string name, string description, bool alwaysIncludeInIdToken)
+        {
+            int parsedSubject, parsedScopeClaimSubject;
+            if (int.TryParse(subject, out parsedSubject) && int.TryParse(scopeClaimSubject, out parsedScopeClaimSubject))
+            {
+                var inMemoryScope = _scopes.FirstOrDefault(p => p.Id == parsedSubject);
+                if (inMemoryScope == null)
+                {
+                    return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+                }
+                var existingClaim = inMemoryScope.ScopeClaims.FirstOrDefault(p => p.Id == parsedScopeClaimSubject);
+                if (existingClaim != null)
+                {
+                    existingClaim.AlwaysIncludeInIdToken = alwaysIncludeInIdToken;
+                    return Task.FromResult(IdentityAdminResult.Success);
+                }
+                return Task.FromResult(new IdentityAdminResult("Not found"));
+            }
+
+            return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+        }
+
         public Task<IdentityAdminResult> RemoveScopeClaimAsync(string subject, string id)
         {
             int parsedSubject;
@@ -300,6 +329,84 @@ namespace IdentityAdmin.Host.InMemoryService
             return Task.FromResult(new IdentityAdminResult("Invalid subject"));
         }
 
+        public Task<IdentityAdminResult> AddScopeSecretAsync(string subject, string type, string value, string description, DateTime? expiration)
+        {
+            int parsedSubject;
+            if (int.TryParse(subject, out parsedSubject))
+            {
+                var inMemoryScope = _scopes.FirstOrDefault(p => p.Id == parsedSubject);
+                if (inMemoryScope == null)
+                {
+                    return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+                }
+                var existingSecrets = inMemoryScope.ScopeSecrets;
+                if (!existingSecrets.Any(x => x.Type == type && x.Value == value))
+                {
+                    inMemoryScope.ScopeSecrets.Add(new InMemoryScopeSecret
+                    {
+                        Id = inMemoryScope.ScopeSecrets.Count + 1,
+                        Type = type,
+                        Value = value,
+                        Description = description,
+                        Expiration = expiration
+                    });
+                }
+                return Task.FromResult(IdentityAdminResult.Success);
+            }
+
+            return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+        }
+
+        public Task<IdentityAdminResult> UpdateScopeSecret(string subject, string scopeSecretSubject, string type, string value, string description, DateTime? expiration)
+          {
+            int parsedSubject, parsedScopeSecretSubject;
+            if (int.TryParse(subject, out parsedSubject) && int.TryParse(scopeSecretSubject, out parsedScopeSecretSubject))
+            {
+                var inMemoryScope = _scopes.FirstOrDefault(p => p.Id == parsedSubject);
+                if (inMemoryScope == null)
+                {
+                    return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+                }
+                var existingSecret = inMemoryScope.ScopeSecrets.FirstOrDefault(p => p.Id == parsedScopeSecretSubject);
+                if (existingSecret != null)
+                {
+                    existingSecret.Value = value;
+                    existingSecret.Type = type;
+                    existingSecret.Description = description;
+                    if (expiration.HasValue)
+                    {
+                        //Save as new DateTimeOffset(expiration.Value)
+                        existingSecret.Expiration = expiration.Value;
+                    }
+                  
+                    return Task.FromResult(IdentityAdminResult.Success);
+                }
+                return Task.FromResult(new IdentityAdminResult("Not found"));
+            }
+
+            return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+        }
+
+        public Task<IdentityAdminResult> RemoveScopeSecretAsync(string subject, string id)
+        {
+            int parsedSubject;
+            int parsedScopeId;
+            if (int.TryParse(subject, out parsedSubject) && int.TryParse(id, out parsedScopeId))
+            {
+                var scope = _scopes.FirstOrDefault(p => p.Id == parsedSubject);
+                if (scope == null)
+                {
+                    return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+                }
+                var existingSecret = scope.ScopeSecrets.FirstOrDefault(p => p.Id == parsedScopeId);
+                if (existingSecret != null)
+                {
+                    scope.ScopeSecrets.Remove(existingSecret);
+                }
+                return Task.FromResult(IdentityAdminResult.Success);
+            }
+            return Task.FromResult(new IdentityAdminResult("Invalid subject"));
+        }
         #endregion
 
         #region Clients
@@ -434,7 +541,6 @@ namespace IdentityAdmin.Host.InMemoryService
                 SlidingRefreshTokenLifetime = client.SlidingRefreshTokenLifetime,
                 Enabled =  true,
                 EnableLocalLogin =  true,
-
             };
 
             foreach (var prop in otherProperties)

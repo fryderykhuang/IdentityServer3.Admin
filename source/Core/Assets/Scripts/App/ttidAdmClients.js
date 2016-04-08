@@ -154,11 +154,37 @@
                     });
                 }, feedback.errorHandler);
         };
-        //Client Scret
+        //Client Secret
+        $scope.availableHashes = {
+            chosenHash: "SHA-512",
+            choices:[
+            {
+                id: "SHA-256",
+                text: "SHA-256",
+                isDefault: "false"
+            }, {
+                id: "SHA-512",
+                text: "SHA-512",
+                isDefault: "true"
+            }
+            ]
+        };
+        function calculateClientHash (clientSecret) {
+            var hashObj = new jsSHA(
+				$scope.availableHashes.chosenHash,
+				"TEXT",
+				{ numRounds: parseInt(1, 10) }
+			);
+            hashObj.update(clientSecret.value);
+            clientSecret.value = hashObj.getHash("B64");
+        }
         $scope.addClientSecret = function (clientSecrets, clientSecret) {
+            calculateClientHash(clientSecret);
             idAdmClients.addClientSecret(clientSecrets, clientSecret)
                 .then(function () {
                     feedback.message = "Client Secret Added : " + clientSecret.type + ", " + clientSecret.value;
+                    clientSecret.type = "";
+                    clientSecret.value = "";
                     loadClient();
                 }, feedback.errorHandler);
         };
@@ -175,14 +201,14 @@
         $scope.addIdentityProviderRestriction = function (identityProviderRestrictions, identityProviderRestriction) {
             idAdmClients.addIdentityProviderRestriction(identityProviderRestrictions, identityProviderRestriction)
                 .then(function () {
-                    feedback.message = "Client Provider Restriction Added : " + identityProviderRestriction.data.provider;
+                    feedback.message = "Client Provider Restriction Added : " + identityProviderRestriction.provider;
                     loadClient();
                 }, feedback.errorHandler);
         };
         $scope.removeIdentityProviderRestriction = function (identityProviderRestriction) {
             idAdmClients.removeIdentityProviderRestriction(identityProviderRestriction)
                 .then(function () {
-                    feedback.message = "Client  Provider Restriction Removed : " + identityProviderRestriction.data.provider;
+                    feedback.message = "Client  Provider Restriction Removed : " + identityProviderRestriction.provider;
                     loadClient().then(function () {
                         $scope.identityProviderRestriction = identityProviderRestriction.data;
                     });

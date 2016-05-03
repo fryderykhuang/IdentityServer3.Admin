@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "bin": {
+        "assembly": "../../../../../packages/Thinktecture.IdentityModel.Owin.ScopeValidation.2.0.0/lib/net45/Thinktecture.IdentityModel.Owin.ScopeValidation.dll",
+        "pdb": "../../../../../packages/Thinktecture.IdentityModel.Owin.ScopeValidation.2.0.0/lib/net45/Thinktecture.IdentityModel.Owin.ScopeValidation.pdb"
+      }
+    }
+  }
+}

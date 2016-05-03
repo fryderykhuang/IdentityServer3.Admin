@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "bin": {
+        "assembly": "../../../../../packages/Thinktecture.IdentityModel.Core.1.4.0/lib/net45/Thinktecture.IdentityModel.Core.dll",
+        "pdb": "../../../../../packages/Thinktecture.IdentityModel.Core.1.4.0/lib/net45/Thinktecture.IdentityModel.Core.pdb"
+      }
+    }
+  }
+}

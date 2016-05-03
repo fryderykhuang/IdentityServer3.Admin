@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "bin": {
+        "assembly": "../../../../../packages/Autofac.3.5.2/lib/net40/Autofac.dll"
+      }
+    }
+  }
+}

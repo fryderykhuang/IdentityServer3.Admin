@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "bin": {
+        "assembly": "../../../../../packages/Thinktecture.IdentityModel.Owin.2.1.1/lib/net45/Thinktecture.IdentityModel.Owin.dll",
+        "pdb": "../../../../../packages/Thinktecture.IdentityModel.Owin.2.1.1/lib/net45/Thinktecture.IdentityModel.Owin.pdb"
+      }
+    }
+  }
+}

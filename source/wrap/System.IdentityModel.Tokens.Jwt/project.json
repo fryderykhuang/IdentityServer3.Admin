@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "bin": {
+        "assembly": "../../../../../packages/System.IdentityModel.Tokens.Jwt.4.0.2.206221351/lib/net45/System.IdentityModel.Tokens.Jwt.dll",
+        "pdb": "../../../../../packages/System.IdentityModel.Tokens.Jwt.4.0.2.206221351/lib/net45/System.IdentityModel.Tokens.Jwt.pdb"
+      }
+    }
+  }
+}

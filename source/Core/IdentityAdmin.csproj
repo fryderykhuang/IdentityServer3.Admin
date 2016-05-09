@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-Mono|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Linux|AnyCPU' ">
     <OutputPath>bin\Release-Mono\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
@@ -92,10 +92,8 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\..\..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime">
-      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\System.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
@@ -216,13 +214,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Content\Bootstrap.css">
-      <DependentUpon>Bootstrap.less</DependentUpon>
+      <!--<DependentUpon>Bootstrap.less</DependentUpon>-->
     </Content>
     <Content Include="Assets\Content\Bootstrap.min.css">
-      <DependentUpon>Bootstrap.css</DependentUpon>
+      <!--<DependentUpon>Bootstrap.css</DependentUpon>-->
     </Content>
     <Content Include="Assets\Content\Bundle.css">
-      <DependentUpon>Bundle.css.bundle</DependentUpon>
+      <!--<DependentUpon>Bundle.css.bundle</DependentUpon>-->
     </Content>
     <Content Include="Assets\Scripts\Libs\moment.js" />
     <Content Include="Assets\Scripts\Libs\sha.js" />
@@ -232,18 +230,18 @@
     <Content Include="Assets\Scripts\Libs\sha_dev.js" />
     <Content Include="Assets\Scripts\Libs\ui-bootstrap-custom-tpls-0.14.3.min.js" />
     <Content Include="Assets\Scripts\Libs\ui-bootstrap-tpls-0.14.3.min.js" />
-    <EmbeddedResource Include="Assets\Content\Bundle.min.css">
-      <DependentUpon>Bundle.css</DependentUpon>
-    </EmbeddedResource>
     <Content Include="Assets\Content\favicon.ico" />
+    <EmbeddedResource Include="Assets\Content\Bundle.min.css">
+      <!--<DependentUpon>Bundle.css</DependentUpon>-->
+    </EmbeddedResource>
     <EmbeddedResource Include="Assets\Content\logo.jpg" />
     <EmbeddedResource Include="Assets\Content\logo.png" />
     <EmbeddedResource Include="Assets\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Assets\Content\style.css">
-      <DependentUpon>style.less</DependentUpon>
+      <!--<DependentUpon>style.less</DependentUpon>-->
     </Content>
     <EmbeddedResource Include="Assets\Content\style.min.css">
-      <DependentUpon>style.css</DependentUpon>
+      <!--<DependentUpon>style.css</DependentUpon>-->
     </EmbeddedResource>
     <Content Include="Assets\Scripts\App\ttidAdm.js" />
     <Content Include="Assets\Scripts\App\ttidAdmApp.js" />
@@ -251,10 +249,10 @@
     <Content Include="Assets\Scripts\App\ttidAdmScopes.js" />
     <Content Include="Assets\Scripts\App\ttidAdmUI.js" />
     <EmbeddedResource Include="Assets\Scripts\Bundle.js">
-      <DependentUpon>Bundle.js.bundle</DependentUpon>
+      <!--<DependentUpon>Bundle.js.bundle</DependentUpon>-->
     </EmbeddedResource>
     <EmbeddedResource Include="Assets\Scripts\Bundle.min.js">
-      <DependentUpon>Bundle.js</DependentUpon>
+      <!--<DependentUpon>Bundle.js</DependentUpon>-->
     </EmbeddedResource>
     <Content Include="Assets\Scripts\Libs\angular-route.min.js" />
     <Content Include="Assets\Scripts\Libs\angular.min.js" />
@@ -280,9 +278,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Assets\Content\Bootstrap.css.map">
+    <!--<None Include="Assets\Content\Bootstrap.css.map">
       <DependentUpon>Bootstrap.css</DependentUpon>
-    </None>
+    </None>-->
     <None Include="Assets\Content\Bootstrap.less" />
     <None Include="Assets\Content\bootstrap\.csscomb.json" />
     <None Include="Assets\Content\bootstrap\.csslintrc" />
@@ -357,21 +355,16 @@
     <None Include="Assets\Content\bootstrap\utilities.less" />
     <None Include="Assets\Content\bootstrap\variables.less" />
     <None Include="Assets\Content\bootstrap\wells.less" />
-    <None Include="Assets\Content\Bundle.css.bundle" />
     <EmbeddedResource Include="Assets\fonts\glyphicons-halflings-regular.eot" />
     <EmbeddedResource Include="Assets\fonts\glyphicons-halflings-regular.ttf" />
     <EmbeddedResource Include="Assets\fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="Assets\fonts\glyphicons-halflings-regular.woff2" />
-    <None Include="Assets\Content\style.css.map">
+    <!--<None Include="Assets\Content\style.css.map">
       <DependentUpon>style.css</DependentUpon>
-    </None>
+    </None>-->
     <None Include="Assets\Content\style.less" />
-    <None Include="Assets\Scripts\Bundle.js.bundle" />
-    <None Include="bundleconfig.json" />
-    <None Include="compilerconfig.json" />
-    <None Include="compilerconfig.json.defaults">
-      <DependentUpon>compilerconfig.json</DependentUpon>
-    </None>
+    <!--<None Include="Assets\Content\Bundle.css.bundle" />
+    <None Include="Assets\Scripts\Bundle.js.bundle" />-->
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

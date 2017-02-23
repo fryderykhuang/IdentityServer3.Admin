@@ -40,7 +40,7 @@ namespace IdentityAdmin.Api.Controllers
         [AllowAnonymous]
         public IHttpActionResult Index()
         {
-            return new EmbeddedHtmlResult(Request, "IdentityAdmin.Assets.Templates.index.html", _identityAdminOptions.AdminSecurityConfiguration);
+            return new EmbeddedHtmlResult(Request, "IdentityAdmin.Assets.Templates.index.html", _identityAdminOptions);
         }
 
         [Route("logout", Name = Constants.RouteNames.Logout)]

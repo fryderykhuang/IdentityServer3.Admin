@@ -236,9 +236,6 @@
     <Content Include="Assets\Content\Bundle.css">
       <!--<DependentUpon>Bundle.css.bundle</DependentUpon>-->
     </Content>
-    <EmbeddedResource Include="Assets\Content\style.min.css">
-      <DependentUpon>style.css</DependentUpon>
-    </EmbeddedResource>
     <Content Include="Assets\Scripts\Libs\moment.js" />
     <Content Include="Assets\Scripts\Libs\sha.js" />
     <Content Include="Assets\Scripts\Libs\sha1.js" />
@@ -257,9 +254,6 @@
     <Content Include="Assets\Content\style.css">
       <!--<DependentUpon>style.less</DependentUpon>-->
     </Content>
-    <EmbeddedResource Include="Assets\Content\style.min.css">
-      <!--<DependentUpon>style.css</DependentUpon>-->
-    </EmbeddedResource>
     <Content Include="Assets\Scripts\App\ttidAdm.js" />
     <Content Include="Assets\Scripts\App\ttidAdmApp.js" />
     <Content Include="Assets\Scripts\App\ttidAdmClients.js" />
